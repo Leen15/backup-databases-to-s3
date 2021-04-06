@@ -1,10 +1,14 @@
-# Docker Postgres backup to Amazon S3 via cron
+# Backup databases to Amazon S3 via cron
 
-This image dumps your postgres databases every hour (OR custom cron defined in `BACKUP_CRON_SCHEDULE`),
+This image dumps your databases every hour (OR custom cron defined in `BACKUP_CRON_SCHEDULE`),
 compresses the dump using bz2 and uploads it to an
 amazon S3 bucket. Backups older than 30 days (OR days defined in `AWS_KEEP_FOR_DAYS`) are
 deleted automatically.
 It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.
+At the moment, it supports:
+- PostgreSQL (pg_dump, versions 9.6 -> 12)
+- MySQL (mysqldump, versions 5.7+ )
+- ClickHouse (versions 19+)
 
 Configure the backup source and s3 target with these environment
 variables:
@@ -17,22 +21,25 @@ variables:
 - `BACKUP_PATH`
 - `BACKUP_CRON_SCHEDULE`
 - `BACKUP_PRIORITY`
-- `PGHOST`
-- `PGDATABASE`
-- `PGPORT`
-- `PGUSER`
-- `PGPASSWORD`
+- `DB_TYPE` (allowed types: `postgres` | `mysql` | `clickhouse`)
+- `DB_HOST`
+- `DB_NAME`
+- `DB_TABLE` (used and mandatory only with ClickHouse )
+- `DB_PORT`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_OPT_PARAMS` (for example with mysql `--lock-tables=false --single-transaction --quick` )
+
 
 
 ## Usage
 
-If you wish to do postgres backups to s3 with [tutum](http://tutum.co)
-or [docker compose](https://docs.docker.com/compose/), put this in your
+If you wish to do backups to s3 with [docker compose](https://docs.docker.com/compose/), put this in your
 `Stackfile`/`docker-compose.yml`:
 
 ```yaml
-fitty-postgres-backup:
-  image: 'leen15/postgres-s3-backup-via-cron'
+db-backup:
+  image: 'leen15/backup-databases-to-s3'
   environment:
     - AWS_ACCESS_KEY_ID=<access key>
     - AWS_BUCKET_NAME=<your s3 bucket name>
@@ -42,17 +49,18 @@ fitty-postgres-backup:
     - BACKUP_PATH=<this will be the directory containing your backups on s3>
     - BACKUP_CRON_SCHEDULE=<this will be the cron schedule if defined. Standard value is 1 hour>
     - BACKUP_PRIORITY=<this is the priority, standard value is "ionice -c 3 nice -n 10">
-    - PGHOST=<see the link section below>
-    - PGDATABASE=<dump only this database, default value export all>
-    - PGUSER=<username>
-    - PGPASSWORD=<password>
-    - PGPORT=<this is usually 5432>
+    - DB_TYPE=<allowed types: postgres | mysql | clickhouse>
+    - DB_HOST=<see the link section below>
+    - DB_NAME=<dump only this database, default value export all>
+    - DB_USER=<username>
+    - DB_PASSWORD=<password>
+    - DB_PORT=<this is usually 5432>
   links:
-    - 'your-postgres-master-container:master'
+    - 'your-db-container:master'
 ```
 
 The `links` section is optional, of course, just make sure you update the
-`PGHOST` environment variable accordingly.
+`DB_HOST` environment variable accordingly.
 
 
 ## Thanks

@@ -4,7 +4,7 @@ require 'fileutils'
 
 bucket_name = ENV['AWS_BUCKET_NAME']
 project_path = ENV['BACKUP_PATH']
-database_name = ENV['PGDATABASE'] || 'all_databases'
+database_name = ENV['DB_NAME'] || 'all_databases'
 
 filepath = ARGV[0]
 filename = File.basename(filepath)
