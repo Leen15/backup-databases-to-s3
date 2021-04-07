@@ -1,21 +1,29 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    aws-sdk (1.66.0)
-      aws-sdk-v1 (= 1.66.0)
-    aws-sdk-v1 (1.66.0)
-      json (~> 1.4)
-      nokogiri (>= 1.4.4)
-    json (1.8.3)
-    mini_portile2 (2.0.0)
-    nokogiri (1.6.7.1)
-      mini_portile2 (~> 2.0.0.rc2)
+    aws-eventstream (1.1.1)
+    aws-partitions (1.441.0)
+    aws-sdk-core (3.113.1)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.239.0)
+      aws-sigv4 (~> 1.1)
+      jmespath (~> 1.0)
+    aws-sdk-kms (1.43.0)
+      aws-sdk-core (~> 3, >= 3.112.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.93.0)
+      aws-sdk-core (~> 3, >= 3.112.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.1)
+    aws-sigv4 (1.2.3)
+      aws-eventstream (~> 1, >= 1.0.2)
+    jmespath (1.4.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  aws-sdk (< 2)
+  aws-sdk-s3
 
 BUNDLED WITH
-   1.10.6
+   2.2.15

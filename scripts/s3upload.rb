@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'aws-sdk'
+require 'aws-sdk-s3'
 require 'fileutils'
 
 bucket_name = ENV['AWS_BUCKET_NAME']
@@ -14,12 +14,14 @@ unless File.exists?(filepath) && File.new(filepath).size > 0
   raise "Database was not backed up"
 end
 
-AWS.config(region: ENV['AWS_REGION'])
-bucket = AWS.s3.buckets[bucket_name]
-object = bucket.objects["#{project_path}/#{filename}"]
-object.write(Pathname.new(filepath), {
-  :acl => :private,
-})
+
+bucket = Aws::S3::Bucket.new(bucket_name)
+object = bucket.object("#{project_path}/#{filename}")
+
+progress = Proc.new do |bytes, totals|
+  puts bytes.map.with_index { |b, i| "Uploading part #{i+1}: "}.join(' ') + "#{(100.0 * bytes.sum / totals.sum).round(2) }%" 
+end
+object.upload_file(filepath, { progress_callback: progress})
 
 if object.exists?
   FileUtils.rm(filepath)
@@ -29,7 +31,6 @@ end
 
 DAYS = ENV['AWS_KEEP_FOR_DAYS'].to_i || 30
 CHECK_TIME = DAYS * 24 * 60 * 60
-objects = bucket.objects.with_prefix(project_path).select do |o|
-  o.last_modified < (Time.now - CHECK_TIME)
+bucket.objects(prefix: project_path).each do |o|
+  o.delete if o.last_modified < (Time.now - CHECK_TIME)
 end
-objects.each(&:delete)

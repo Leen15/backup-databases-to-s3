@@ -1,4 +1,4 @@
-FROM ruby:2.3
+FROM ruby:2.7-slim
 
 ARG CH_version=19.3.4
 
@@ -14,7 +14,7 @@ RUN apt-get update -y && \
     apt-get update -y && \
     apt-get install -y \
         postgresql-client-12 \
-        mysql-client \
+        mariadb-client \
         clickhouse-client=$CH_version \
         clickhouse-common-static=$CH_version \
     && rm -rf /var/lib/apt/lists/* /var/cache/debconf && apt-get clean
@@ -27,10 +27,7 @@ WORKDIR /backup
 # Prepare ruby & gems
 COPY Gemfile /backup/Gemfile
 COPY Gemfile.lock /backup/Gemfile.lock
-RUN gem install nokogiri -v 1.6.7.1 -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2 && \
-    gem install bundler && \
-    bundle config build.nokogiri --use-system-libraries=true --with-xml2-include=/usr/include/libxml2 && \
-    NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
+RUN gem install bundler -v 2.2.15 && bundle install
 
 # Copy scripts
 COPY scripts/ /backup/
