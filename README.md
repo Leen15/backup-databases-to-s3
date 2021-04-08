@@ -79,7 +79,7 @@ spec:
             - name: DB_NAME
               value: my-database
             - name: DB_PORT
-              value: "3306"
+              value: 3306
             - name: MYSQL_USER
               value: user
             - name: MYSQL_PASSWORD
