@@ -7,7 +7,7 @@ export PGPORT="$DB_PORT"
 export PGUSER="$DB_USER"
 export PGPASSWORD="$DB_PASSWORD"
 
-if [ -z "$PGDATABASE" ]; then
+if [ -z "${PGDATABASE}" ]; then
   CMD=pg_dumpall
 else
   CMD="pg_dump ${PGDATABASE}"

@@ -3,7 +3,7 @@ require 'aws-sdk-s3'
 require 'fileutils'
 
 bucket_name = ENV['AWS_BUCKET_NAME']
-project_path = ENV['BACKUP_PATH']
+project_path = ENV['AWS_BUCKET_PATH']
 database_name = ENV['DB_NAME'] || 'all_databases'
 
 filepath = ARGV[0]

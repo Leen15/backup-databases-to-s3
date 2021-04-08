@@ -17,8 +17,8 @@ variables:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_BUCKET_NAME`
+- `AWS_BUCKET_PATH`
 - `AWS_KEEP_FOR_DAYS`
-- `BACKUP_PATH`
 - `BACKUP_CRON_SCHEDULE`
 - `BACKUP_PRIORITY`
 - `DB_TYPE` (allowed types: `postgres` | `mysql` | `clickhouse`)
@@ -70,8 +70,10 @@ spec:
               value: secretKey
             - name: AWS_DEFAULT_REGION
               value: eu-west-1
-            - name: BACKUP_S3_BUCKET
-              value: backups/db-dumps/my-database
+            - name: AWS_BUCKET_NAME
+              value: backups
+            - name: AWS_BUCKET_PATH
+              value: db-dumps/my-database
             - name: DB_TYPE
               value: mysql
             - name: DB_HOST
