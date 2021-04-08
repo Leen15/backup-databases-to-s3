@@ -31,38 +31,64 @@ variables:
 - `DB_OPT_PARAMS` (for example with mysql `--lock-tables=false --single-transaction --quick` )
 
 
-
 ## Usage
 
-If you wish to do backups to s3 with [docker compose](https://docs.docker.com/compose/), put this in your
-`Stackfile`/`docker-compose.yml`:
+You can you this image in two different ways:  
+- Using the internal cronjob
+- Using oneshot
+- Using with a k8s cronjob
 
+### Internal CronJob Example:
+`docker run -it --env-file .env leen15/db-backup-to-s3` 
+By default it will run every hour.   
+    
+### Oneshot Example:
+`docker run -it --env-file .env --entrypoint '/backup/backup.sh' leen15/db-backup-to-s3` 
+   
+### K8s cronjob Example:
 ```yaml
-db-backup:
-  image: 'leen15/backup-databases-to-s3'
-  environment:
-    - AWS_ACCESS_KEY_ID=<access key>
-    - AWS_BUCKET_NAME=<your s3 bucket name>
-    - AWS_REGION=<the region your bucket is in>
-    - AWS_SECRET_ACCESS_KEY=< secret access key>
-    - AWS_KEEP_FOR_DAYS=< how many days do you want to keep backups>
-    - BACKUP_PATH=<this will be the directory containing your backups on s3>
-    - BACKUP_CRON_SCHEDULE=<this will be the cron schedule if defined. Standard value is 1 hour>
-    - BACKUP_PRIORITY=<this is the priority, standard value is "ionice -c 3 nice -n 10">
-    - DB_TYPE=<allowed types: postgres | mysql | clickhouse>
-    - DB_HOST=<see the link section below>
-    - DB_NAME=<dump only this database, default value export all>
-    - DB_USER=<username>
-    - DB_PASSWORD=<password>
-    - DB_PORT=<this is usually 5432>
-  links:
-    - 'your-db-container:master'
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: Database Backup
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: leen15/db-backup-to-s3
+            imagePullPolicy: IfNotPresent
+            command:
+            - /backup/backup.sh
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: keyID
+            - name: AWS_SECRET_ACCESS_KEY
+              value: secretKey
+            - name: AWS_DEFAULT_REGION
+              value: eu-west-1
+            - name: BACKUP_S3_BUCKET
+              value: backups/db-dumps/my-database
+            - name: DB_TYPE
+              value: mysql
+            - name: DB_HOST
+              value: db
+            - name: DB_NAME
+              value: my-database
+            - name: DB_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              value: user
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: DB_OPT_PARAMS
+              value: --lock-tables=false --single-transaction --quick
+          restartPolicy: OnFailure
 ```
-
-The `links` section is optional, of course, just make sure you update the
-`DB_HOST` environment variable accordingly.
-
-
+   
 ## Thanks
 
 Adapted from [here](https://blog.danivovich.com/2015/07/23/postgres-backups-to-s3-with-docker-and-systemd/), [here](http://blog.oestrich.org/2015/01/pg-to-s3-backup-script/) and [here](https://www.ekito.fr/people/run-a-cron-job-with-docker/).
