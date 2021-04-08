@@ -1,10 +1,10 @@
 # Backup databases to Amazon S3 via cron
 
 This image dumps your databases every hour (OR custom cron defined in `BACKUP_CRON_SCHEDULE`),
-compresses the dump using bz2 and uploads it to an
-amazon S3 bucket. Backups older than 30 days (OR days defined in `AWS_KEEP_FOR_DAYS`) are
-deleted automatically.
-It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.
+compresses the dump using bz2 and uploads it to an amazon S3 bucket.  
+Backups older than 30 days (OR days defined in `AWS_KEEP_FOR_DAYS`) are deleted automatically.   
+It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.   
+    
 At the moment, it supports:
 - PostgreSQL (pg_dump, versions 9.6 -> 12)
 - MySQL (mysqldump, versions 5.7+ )
