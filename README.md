@@ -80,9 +80,9 @@ spec:
               value: my-database
             - name: DB_PORT
               value: 3306
-            - name: MYSQL_USER
+            - name: DB_USER
               value: user
-            - name: MYSQL_PASSWORD
+            - name: DB_PASSWORD
               value: password
             - name: DB_OPT_PARAMS
               value: --lock-tables=false --single-transaction --quick
