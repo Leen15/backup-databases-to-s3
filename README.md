@@ -58,7 +58,7 @@ spec:
       template:
         spec:
           containers:
-          - name: hello
+          - name: db-backup
             image: leen15/db-backup-to-s3
             imagePullPolicy: IfNotPresent
             command:
