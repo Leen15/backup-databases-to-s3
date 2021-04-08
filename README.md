@@ -2,7 +2,7 @@
 
 This image dumps your databases every hour (OR custom cron defined in `BACKUP_CRON_SCHEDULE`),
 compresses the dump using bz2 and uploads it to an amazon S3 bucket.  
-Backups older than 30 days (OR days defined in `AWS_KEEP_FOR_DAYS`) are deleted automatically.   
+With a valid `AWS_KEEP_FOR_DAYS` backups older than that days are deleted automatically (on the same path).   
 It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.   
     
 At the moment, it supports:

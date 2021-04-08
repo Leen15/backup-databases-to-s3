@@ -19,7 +19,9 @@ bucket = Aws::S3::Bucket.new(bucket_name)
 object = bucket.object("#{project_path}/#{filename}")
 
 progress = Proc.new do |bytes, totals|
-  puts bytes.map.with_index { |b, i| "Uploading part #{i+1}: "}.join(' ') + "#{(100.0 * bytes.sum / totals.sum).round(2) }%" 
+  if totals.sum > 0
+    puts bytes.map.with_index { |b, i| "Uploading part #{i+1}: "}.join(' ') + "#{(100.0 * bytes.sum / totals.sum).round(2) }%" 
+  end
 end
 object.upload_file(filepath, { progress_callback: progress})
 
@@ -29,8 +31,10 @@ else
   raise "S3 Object wasn't created"
 end
 
-DAYS = ENV['AWS_KEEP_FOR_DAYS'].to_i || 30
-CHECK_TIME = DAYS * 24 * 60 * 60
-bucket.objects(prefix: project_path).each do |o|
-  o.delete if o.last_modified < (Time.now - CHECK_TIME)
+if ENV['AWS_KEEP_FOR_DAYS'].to_i > 0
+  DAYS = ENV['AWS_KEEP_FOR_DAYS'].to_i
+  CHECK_TIME = DAYS * 24 * 60 * 60
+  bucket.objects(prefix: project_path).each do |o|
+    o.delete if o.last_modified < (Time.now - CHECK_TIME)
+  end
 end
