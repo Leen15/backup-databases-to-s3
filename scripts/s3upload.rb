@@ -19,7 +19,7 @@ bucket = Aws::S3::Bucket.new(bucket_name)
 object = bucket.object("#{project_path}/#{filename}")
 
 progress = Proc.new do |bytes, totals|
-  if totals.sum > 0
+  if totals.sum > 0 and ENV['AWS_SHOW_UPLOAD_PROGRESS'] == 'true'
     puts bytes.map.with_index { |b, i| "Uploading part #{i+1}: "}.join(' ') + "#{(100.0 * bytes.sum / totals.sum).round(2) }%" 
   end
 end

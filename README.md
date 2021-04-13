@@ -19,6 +19,7 @@ variables:
 - `AWS_BUCKET_NAME`
 - `AWS_BUCKET_PATH`
 - `AWS_KEEP_FOR_DAYS`
+- `AWS_SHOW_UPLOAD_PROGRESS` (ex. `true`)
 - `BACKUP_CRON_SCHEDULE`
 - `BACKUP_PRIORITY`
 - `DB_TYPE` (allowed types: `postgres` | `mysql` | `clickhouse`)
