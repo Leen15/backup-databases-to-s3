@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 echo "`date` ~~~~~~~~~~~ STARTING BACKUP ~~~~~~~~~~~~"
 # echo "Config:"
 # echo "  - AWS_REGION=${AWS_REGION}"
