@@ -42,7 +42,7 @@ fi
 
 echo "`date` Compressing dump"
 mv /tmp/backup.dump /tmp/$FILENAME
-lbzip2 /tmp/$FILENAME
+$COMPRESSION_PRIORITY lbzip2 /tmp/$FILENAME
 
 echo "`date` Uploading to S3"
 /backup/s3upload.rb /tmp/$FILENAME.bz2

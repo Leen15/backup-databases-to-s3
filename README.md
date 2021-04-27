@@ -21,7 +21,8 @@ variables:
 - `AWS_KEEP_FOR_DAYS`
 - `AWS_SHOW_UPLOAD_PROGRESS` (ex. `true`)
 - `BACKUP_CRON_SCHEDULE`
-- `BACKUP_PRIORITY`
+- `BACKUP_PRIORITY` (default `ionice -c 3 nice -n 10`)
+- `COMPRESSION_PRIORITY` (ex. `ionice -c 3 nice -n 10`, null as default)
 - `DB_TYPE` (allowed types: `postgres` | `mysql` | `clickhouse`)
 - `DB_HOST`
 - `DB_NAME`
