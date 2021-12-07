@@ -18,7 +18,7 @@ rm -f /tmp/backup.dump.bz2
 
 if [ -f /tmp/backup.dump ]; then
   echo "Dump in progress, aborting..."
-  exit 0
+  exit 1
 fi
 
 
@@ -37,8 +37,8 @@ elif [[ "$DB_TYPE" == "clickhouse" ]]; then
   /backup/databases/clickhouse.sh
 else
   echo "DB_TYPE not recognized. Supported types: postgres | mysql | clickhouse."
-  exit 0
-fi 
+  exit 1
+fi
 
 echo "`date` Compressing dump"
 mv /tmp/backup.dump /tmp/$FILENAME
