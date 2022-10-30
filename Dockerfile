@@ -1,6 +1,7 @@
 FROM ruby:2.7-slim
 
 ARG CH_VERSION=19.3.4
+ARG PG_VERSION=14
 
 RUN apt-get update -y && \
     apt-get install -y \
@@ -13,7 +14,7 @@ RUN apt-get update -y && \
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
     apt-get update -y && \
     apt-get install -y \
-        postgresql-client-12 \
+        postgresql-client-$PG_VERSION \
         mariadb-client \
         clickhouse-client=$CH_VERSION \
         clickhouse-common-static=$CH_VERSION \

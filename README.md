@@ -1,12 +1,12 @@
 # Backup databases to Amazon S3 via cron
 
 This image dumps your databases every hour (OR custom cron defined in `BACKUP_CRON_SCHEDULE`),
-compresses the dump using bz2 and uploads it to an amazon S3 bucket.  
-With a valid `AWS_KEEP_FOR_DAYS` backups older than that days are deleted automatically (on the same path).   
-It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.   
-    
+compresses the dump using bz2 and uploads it to an amazon S3 bucket.
+With a valid `AWS_KEEP_FOR_DAYS` backups older than that days are deleted automatically (on the same path).
+It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.
+
 At the moment, it supports:
-- PostgreSQL (pg_dump, versions 9.6 -> 12)
+- PostgreSQL (pg_dump, versions <= 14)
 - MySQL (mysqldump, versions 5.7+ )
 - ClickHouse (versions 19+)
 
@@ -35,18 +35,18 @@ variables:
 
 ## Usage
 
-You can you this image in two different ways:  
+You can you this image in two different ways:
 - Using the internal cronjob
 - Using oneshot
 - Using with a k8s cronjob
 
 ### Internal CronJob Example:
-`docker run -it --env-file .env leen15/db-backup-to-s3` 
-By default it will run every hour.   
-    
+`docker run -it --env-file .env leen15/db-backup-to-s3`
+By default it will run every hour.
+
 ### Oneshot Example:
-`docker run -it --env-file .env --entrypoint '/backup/backup.sh' leen15/db-backup-to-s3` 
-   
+`docker run -it --env-file .env --entrypoint '/backup/backup.sh' leen15/db-backup-to-s3`
+
 ### K8s cronjob Example:
 ```yaml
 apiVersion: batch/v1beta1
@@ -92,7 +92,7 @@ spec:
               value: --lock-tables=false --single-transaction --quick
           restartPolicy: OnFailure
 ```
-   
+
 ## Thanks
 
 Adapted from [here](https://blog.danivovich.com/2015/07/23/postgres-backups-to-s3-with-docker-and-systemd/), [here](http://blog.oestrich.org/2015/01/pg-to-s3-backup-script/) and [here](https://www.ekito.fr/people/run-a-cron-job-with-docker/).
