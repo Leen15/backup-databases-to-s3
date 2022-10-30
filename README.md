@@ -6,7 +6,7 @@ With a valid `AWS_KEEP_FOR_DAYS` backups older than that days are deleted automa
 It also have a `BACKUP_PRIORITY` params for set the backup priority with ionice and nice values.   
     
 At the moment, it supports:
-- PostgreSQL (pg_dump, versions 9.6 -> 12)
+- PostgreSQL (pg_dump, versions <= 14)
 - MySQL (mysqldump, versions 5.7+ )
 - ClickHouse (versions 19+)
 
