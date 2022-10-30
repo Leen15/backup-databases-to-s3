@@ -1,6 +1,6 @@
 FROM ruby:2.7-slim
 
-ARG CH_version=19.3.4
+ARG CH_VERSION=19.3.4
 
 RUN apt-get update -y && \
     apt-get install -y \
@@ -15,10 +15,10 @@ RUN apt-get update -y && \
     apt-get install -y \
         postgresql-client-12 \
         mariadb-client \
-        clickhouse-client=$CH_version \
-        clickhouse-common-static=$CH_version \
+        clickhouse-client=$CH_VERSION \
+        clickhouse-common-static=$CH_VERSION \
     && rm -rf /var/lib/apt/lists/* /var/cache/debconf && apt-get clean
-    
+
 
 # Create workdir
 RUN mkdir /backup
