@@ -1,16 +1,17 @@
-FROM ruby:2.7-slim
+FROM ruby:3.2-slim
 
-ARG CH_VERSION=19.3.4
-ARG PG_VERSION=14
+ARG CH_VERSION=25.6.2.5
+ARG PG_VERSION=17
 
 RUN apt-get update && \
     apt-get install -y \
-        wget htop lbzip2 gnupg2 build-essential \
+        wget htop lbzip2 gnupg2 ca-certificates curl apt-transport-https build-essential \
         libxml2-dev libxslt-dev liblzma-dev zlib1g-dev \
-        patch libpq5 cron locales tzdata && \
-    echo "deb http://repo.yandex.ru/clickhouse/deb/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv E0C56BD4 && \
-    echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+        patch cron locales tzdata && \
+    curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg && \
+    ARCH=$(dpkg --print-architecture) && \
+    echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" > /etc/apt/sources.list.d/clickhouse.list && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
     apt-get update && \
     apt-get install -y \
@@ -44,4 +45,4 @@ ADD crontab /etc/cron.d/backup-cron
 RUN chmod 0644 /etc/cron.d/backup-cron
 
 # Run the command on container startup
-ENTRYPOINT /backup/run_cron.sh
+ENTRYPOINT ["/backup/run_cron.sh"]

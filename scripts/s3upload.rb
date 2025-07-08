@@ -10,7 +10,7 @@ filepath = ARGV[0]
 filename = File.basename(filepath)
 
 # verify file exists and file size is > 0 bytes
-unless File.exists?(filepath) && File.new(filepath).size > 0
+unless File.exist?(filepath) && File.new(filepath).size > 0
   raise "Database was not backed up"
 end
 
@@ -20,7 +20,7 @@ object = bucket.object("#{project_path}/#{filename}")
 
 progress = Proc.new do |bytes, totals|
   if totals.sum > 0 and ENV['AWS_SHOW_UPLOAD_PROGRESS'] == 'true'
-    puts bytes.map.with_index { |b, i| "Uploading part #{i+1}: "}.join(' ') + "#{(100.0 * bytes.sum / totals.sum).round(2) }%" 
+    puts bytes.map.with_index { |b, i| "Uploading part #{i+1}: "}.join(' ') + "#{(100.0 * bytes.sum / totals.sum).round(2) }%"
   end
 end
 object.upload_file(filepath, { progress_callback: progress})
